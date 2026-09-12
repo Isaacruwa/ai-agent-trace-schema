@@ -31,6 +31,20 @@ pip install jsonschema
 python validate.py your-trace-events.json
 ```
 
+## `traceconv` — convert your existing traces to this schema
+
+If you already have OpenTelemetry or LangSmith trace exports, `traceconv.py` converts them into this schema so you don't have to hand-map the fields yourself.
+
+```bash
+python traceconv.py otel your-otel-export.json -o trace-events.json
+python traceconv.py langsmith your-langsmith-runs.json -o trace-events.json
+
+# then check the result is valid:
+python validate.py trace-events.json
+```
+
+It's a heuristic, best-effort converter covering common export shapes (OTLP/JSON spans, LangSmith run exports with feedback), not an exhaustive parser for every possible instrumentation setup — unrecognized spans/runs are skipped with a warning rather than causing a crash. If your setup uses different attribute names, the mapping functions in `traceconv.py` are short and meant to be adapted; PRs adding support for other export shapes (AgentOps, MCP logs, other OTel semantic conventions) are welcome.
+
 ## Who maintains this
 
 This schema is maintained by [Attestly](https://attestly.online), which reads traces in this shape (or maps OpenTelemetry/LangSmith/AgentOps/MCP logs into it) and drafts EU AI Act Annex IV technical documentation with evidence links back to the specific trace events that justify each section. Using this schema doesn't require using Attestly — it's published openly so any tool in this space can adopt a shared format instead of everyone inventing their own.
