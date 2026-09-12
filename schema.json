@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Isaacruwa/ai-agent-trace-schema/schema/trace-event.schema.json",
+  "title": "AI Agent Trace Event",
+  "description": "A single normalized event from an AI agent's runtime execution trace. Designed to be a common, minimal target format that OpenTelemetry spans, LangSmith runs, AgentOps sessions, and MCP tool-call logs can all be mapped down to, so downstream tools (compliance documentation, monitoring, audits) don't need a separate parser per source.",
+  "type": "object",
+  "required": ["event", "id", "timestamp"],
+  "properties": {
+    "event": {
+      "type": "string",
+      "description": "The kind of thing that happened.",
+      "enum": ["tool_call", "model_call", "human_intervention", "error", "deployment_change"]
+    },
+    "id": {
+      "type": "string",
+      "description": "A unique identifier for this event, stable enough to be cited as evidence (e.g. in generated documentation)."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the event occurred."
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Identifier grouping this event with others from the same agent run/session, if applicable."
+    },
+    "tool": {
+      "type": "string",
+      "description": "Name of the tool invoked. Required when event is 'tool_call'."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["success", "failure", "timeout"],
+      "description": "Outcome of a tool_call or model_call."
+    },
+    "actor": {
+      "type": "string",
+      "description": "Identifier (e.g. email) of the human involved. Required when event is 'human_intervention'."
+    },
+    "action": {
+      "type": "string",
+      "description": "What the human did, e.g. 'approved', 'rejected', 'overrode'. Used with human_intervention."
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable detail, e.g. an error message."
+    },
+    "from": {
+      "type": "string",
+      "description": "Prior version/state. Used with deployment_change."
+    },
+    "to": {
+      "type": "string",
+      "description": "New version/state. Used with deployment_change."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Free-form additional context that doesn't fit the fields above.",
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "event": { "const": "tool_call" } } },
+      "then": { "required": ["tool", "status"] }
+    },
+    {
+      "if": { "properties": { "event": { "const": "human_intervention" } } },
+      "then": { "required": ["actor", "action"] }
+    },
+    {
+      "if": { "properties": { "event": { "const": "deployment_change" } } },
+      "then": { "required": ["from", "to"] }
+    }
+  ],
+  "additionalProperties": true
+}
