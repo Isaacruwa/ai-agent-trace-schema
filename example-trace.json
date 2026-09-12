@@ -1,0 +1,32 @@
+[
+  {
+    "event": "tool_call",
+    "id": "a91f02c1",
+    "timestamp": "2026-08-14T09:12:03Z",
+    "session_id": "sess_4471",
+    "tool": "refund_api",
+    "status": "success"
+  },
+  {
+    "event": "human_intervention",
+    "id": "a91f02c2",
+    "timestamp": "2026-08-14T09:12:41Z",
+    "session_id": "sess_4471",
+    "actor": "reviewer@acme.eu",
+    "action": "approved"
+  },
+  {
+    "event": "error",
+    "id": "a91f02c3",
+    "timestamp": "2026-08-14T09:08:55Z",
+    "session_id": "sess_4471",
+    "message": "timeout on retry 2"
+  },
+  {
+    "event": "deployment_change",
+    "id": "a91f02c4",
+    "timestamp": "2026-08-15T00:00:00Z",
+    "from": "v1.4",
+    "to": "v1.5"
+  }
+]
