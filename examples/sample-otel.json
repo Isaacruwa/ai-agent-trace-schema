@@ -1,0 +1,37 @@
+{
+  "resourceSpans": [
+    {
+      "scopeSpans": [
+        {
+          "spans": [
+            {
+              "spanId": "a1b2c3",
+              "name": "tool.refund_api",
+              "startTimeUnixNano": "2026-08-14T09:12:03Z",
+              "attributes": [
+                {"key": "tool.name", "value": {"stringValue": "refund_api"}}
+              ],
+              "status": {"code": "OK"}
+            },
+            {
+              "spanId": "d4e5f6",
+              "name": "chat.completion",
+              "startTimeUnixNano": "2026-08-14T09:12:05Z",
+              "attributes": [
+                {"key": "gen_ai.request.model", "value": {"stringValue": "gpt-4o"}}
+              ],
+              "status": {"code": "ERROR", "message": "rate limited"}
+            },
+            {
+              "spanId": "zzzzzz",
+              "name": "some.unrelated.span",
+              "startTimeUnixNano": "2026-08-14T09:12:06Z",
+              "attributes": [],
+              "status": {"code": "OK"}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
