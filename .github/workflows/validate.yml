@@ -12,5 +12,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - run: pip install jsonschema
+      - run: pip install jsonschema rfc3339-validator
       - run: python validate.py example-trace.json
+      - name: Convert and validate the OTel sample end-to-end
+        run: |
+          python traceconv.py otel examples/sample-otel.json -o /tmp/otel-out.json
+          python validate.py /tmp/otel-out.json
+      - name: Timestamp conversion regression test
+        run: python test_timestamp_conversion.py
