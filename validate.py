@@ -8,15 +8,18 @@ Usage:
 Exits 0 and prints "OK" if every event is valid, otherwise prints
 each validation error and exits 1.
 
-Requires: pip install jsonschema
+Requires: pip install jsonschema rfc3339-validator
+    (rfc3339-validator is what actually makes the "date-time" format check
+    enforce anything — without it, jsonschema's FormatChecker silently
+    treats every date-time value, valid or not, as passing.)
 """
 import json
 import sys
 
 try:
-    from jsonschema import Draft202012Validator
+    from jsonschema import Draft202012Validator, FormatChecker
 except ImportError:
-    print("Missing dependency. Run: pip install jsonschema", file=sys.stderr)
+    print("Missing dependency. Run: pip install jsonschema rfc3339-validator", file=sys.stderr)
     sys.exit(2)
 
 
@@ -36,7 +39,7 @@ def main():
     if isinstance(events, dict):
         events = [events]
 
-    validator = Draft202012Validator(schema)
+    validator = Draft202012Validator(schema, format_checker=FormatChecker())
     had_error = False
 
     for i, event in enumerate(events):
