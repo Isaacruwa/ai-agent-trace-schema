@@ -25,9 +25,33 @@ the warnings and extend the mapping functions below for your own
 setup if you hit gaps. PRs adding support for other shapes welcome.
 """
 import argparse
+import datetime
 import json
 import sys
 import uuid
+
+
+def _nanos_to_rfc3339(nanos):
+    dt = datetime.datetime.fromtimestamp(nanos / 1_000_000_000, tz=datetime.timezone.utc)
+    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _normalize_timestamp(raw):
+    """Convert a raw timestamp value to an RFC 3339 UTC string.
+
+    OTLP/JSON serializes uint64 fields (like startTimeUnixNano) as decimal
+    strings representing nanoseconds since the Unix epoch, per the protobuf
+    JSON mapping — not ISO 8601. Detect that shape (an int, or a string of
+    only digits) and convert it; anything else is assumed to already be an
+    RFC 3339 string and is passed through unchanged.
+    """
+    if raw is None:
+        return None
+    if isinstance(raw, int):
+        return _nanos_to_rfc3339(raw)
+    if isinstance(raw, str) and raw.isdigit():
+        return _nanos_to_rfc3339(int(raw))
+    return str(raw)
 
 
 def _otel_attr_value(value):
@@ -95,14 +119,11 @@ def convert_otel(data):
         attrs = span.get("attributes", {})
         name = span.get("name", "")
         span_id = span.get("spanId") or span.get("span_id") or str(uuid.uuid4())
-        timestamp = (
+        timestamp = _normalize_timestamp(
             span.get("startTimeUnixNano")
             or span.get("start_time")
             or span.get("timestamp")
         )
-        # Best-effort: leave non-ISO timestamps as-is; caller/schema
-        # validation will flag anything that isn't ISO 8601.
-        timestamp = str(timestamp) if timestamp is not None else None
 
         tool_name = attrs.get("tool.name") or attrs.get("gen_ai.tool.name")
         model_name = attrs.get("gen_ai.request.model") or attrs.get("llm.model")
