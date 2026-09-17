@@ -7,7 +7,7 @@
             {
               "spanId": "a1b2c3",
               "name": "tool.refund_api",
-              "startTimeUnixNano": "2026-08-14T09:12:03Z",
+              "startTimeUnixNano": "1786785123000000000",
               "attributes": [
                 {"key": "tool.name", "value": {"stringValue": "refund_api"}}
               ],
@@ -16,7 +16,7 @@
             {
               "spanId": "d4e5f6",
               "name": "chat.completion",
-              "startTimeUnixNano": "2026-08-14T09:12:05Z",
+              "startTimeUnixNano": "1786785125000000000",
               "attributes": [
                 {"key": "gen_ai.request.model", "value": {"stringValue": "gpt-4o"}}
               ],
@@ -25,7 +25,7 @@
             {
               "spanId": "zzzzzz",
               "name": "some.unrelated.span",
-              "startTimeUnixNano": "2026-08-14T09:12:06Z",
+              "startTimeUnixNano": "1786785126000000000",
               "attributes": [],
               "status": {"code": "OK"}
             }
