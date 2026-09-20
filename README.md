@@ -27,9 +27,11 @@ See [`schema.json`](./schema.json) for the full definition and [`example-trace.j
 ## Validating your own traces
 
 ```bash
-pip install jsonschema
+pip install jsonschema rfc3339-validator
 python validate.py your-trace-events.json
 ```
+
+`rfc3339-validator` is required, not optional — without it, `jsonschema`'s date-time format check silently accepts any string regardless of validity, and `validate.py` will refuse to run rather than give you a false sense of correctness.
 
 ## `traceconv` — convert your existing traces to this schema
 
