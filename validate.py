@@ -11,7 +11,8 @@ each validation error and exits 1.
 Requires: pip install jsonschema rfc3339-validator
     (rfc3339-validator is what actually makes the "date-time" format check
     enforce anything — without it, jsonschema's FormatChecker silently
-    treats every date-time value, valid or not, as passing.)
+    treats every date-time value, valid or not, as passing. This script
+    checks for that and refuses to run rather than give a false pass.)
 """
 import json
 import sys
@@ -20,6 +21,15 @@ try:
     from jsonschema import Draft202012Validator, FormatChecker
 except ImportError:
     print("Missing dependency. Run: pip install jsonschema rfc3339-validator", file=sys.stderr)
+    sys.exit(2)
+
+if "date-time" not in FormatChecker.checkers:
+    print(
+        "Missing dependency: rfc3339-validator is not installed, so date-time "
+        "format checking (used to validate every event's 'timestamp' field) "
+        "would silently do nothing. Run: pip install rfc3339-validator",
+        file=sys.stderr,
+    )
     sys.exit(2)
 
 
